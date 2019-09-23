@@ -13,6 +13,9 @@ using Microsoft.Extensions.Options;
 using DatingApp.API.Data;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 //using Microsoft.EntityFrameworkCore.UseSqlite;
 
 namespace DatingApp.API
@@ -36,6 +39,22 @@ namespace DatingApp.API
             //use dot net FM for web API.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+
+            services.AddScoped<IAuthRepository, AuthRepository>();
+
+            //Inject Authorization
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options => 
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes
+                                    (Configuration.GetSection("AppSetting:Token").Value)),
+                                    ValidateIssuer = false,
+                                    ValidateAudience = false
+                        };
+                    });
         }
 
         // This method gets called by the runtime. Use this method to 
@@ -55,6 +74,8 @@ namespace DatingApp.API
 
             //app.UseHttpsRedirection();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
