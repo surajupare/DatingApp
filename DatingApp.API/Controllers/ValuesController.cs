@@ -23,6 +23,7 @@ namespace DatingApp.API.Controllers
 
         }
         // GET api/values
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetValues() //Task - represet asyn opreation tht can return a value. It will keep thread open and not block any other req while waitng for response.
         {
