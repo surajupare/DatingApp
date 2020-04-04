@@ -33,9 +33,12 @@ export class ErrorInterceptor implements HttpInterceptor {
     }
 }
 
-
+// In order for that interceptor to be called,
+// it has to be added to the list of all HTTP_INTERCEPTORS,
+// which can be done in below way and add it in app.module.ts's provider section
+// or else you can diretly write in app.module.ts
 export const ErrorInterceptorProvider = {
     provide: HTTP_INTERCEPTORS,
     useClass: ErrorInterceptor,
-    multi: true
+    multi: true // You could have several different interceptors
 };
