@@ -20,6 +20,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using DatingApp.API.Helpers;
+using AutoMapper;
 //using Microsoft.EntityFrameworkCore.UseSqlite;
 
 namespace DatingApp.API
@@ -41,10 +42,16 @@ namespace DatingApp.API
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));// it will point to appSetting.json Connection string
            
             //use dot net FM for web API.
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(opt => {
+                    opt.SerializerSettings.ReferenceLoopHandling = 
+                                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddCors();
-
+            services.AddAutoMapper();
+            services.AddTransient<Seed>(); //Seeding dummy data into DB.
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
 
             //Inject Authorization
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -63,7 +70,7 @@ namespace DatingApp.API
 
         // This method gets called by the runtime. Use this method to 
         //configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
         {
             //for development
             if (env.IsDevelopment())
@@ -90,6 +97,7 @@ namespace DatingApp.API
             }
 
             //app.UseHttpsRedirection();
+            //seeder.SeedUsers(); //Seeding data into DB.
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthentication();
