@@ -48,6 +48,8 @@ namespace DatingApp.API
                                 Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
             services.AddCors();
+            //values from cloudinarySettings class are match/mapped to appsetting's section values.
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper();
             services.AddTransient<Seed>(); //Seeding dummy data into DB.
             services.AddScoped<IAuthRepository, AuthRepository>();
