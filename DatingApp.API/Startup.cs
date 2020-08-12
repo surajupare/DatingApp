@@ -68,6 +68,7 @@ namespace DatingApp.API
                                     ValidateAudience = false
                         };
                     });
+            services.AddScoped<LogUserActivity>(); //Create new instance per req.
         }
 
         // This method gets called by the runtime. Use this method to 
