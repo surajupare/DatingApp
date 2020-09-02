@@ -27,7 +27,8 @@
         <div class="card-footer">
           <div class="btn-group d-flex">
             <button class="btn btn-primary w-100">Like</button>
-            <button class="btn btn-success w-100">Message</button>
+            <button class="btn btn-success w-100"(click)="selectTab(3)">Message</button> <!--3 is for
+              message tab see below div. It has tabs and message tab position is 3-->
           </div>
         </div>
       </div>
@@ -35,7 +36,7 @@
 
     <div class="col-sm-8">
       <div class="tab-panel">
-        <tabset class="member-tabset"><!--See TabsModule.forRoot() in appModule.ts-->
+        <tabset class="member-tabset" #memberTabs><!--See TabsModule.forRoot() in appModule.ts-->
           <tab heading="About {{user.knownAs}}">
             <h4>Description</h4>
             <p>{{user.introduction}}</p>
@@ -50,7 +51,7 @@
             <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
           </tab>
           <tab heading="Messages">
-            <p>Messages will go here...</p>
+            <app-member-messages [recipientId] = "user.id"></app-member-messages>
           </tab>
         </tabset>
       </div>
